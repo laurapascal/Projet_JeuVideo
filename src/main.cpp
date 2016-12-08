@@ -1,6 +1,7 @@
 #include <irrlicht.h>
 #include <iostream>
 #include <vector>
+#include "coins.hpp"
 
 using namespace irr;
 
@@ -38,7 +39,7 @@ int main()
   MyEventReceiver receiver;
 
   // Vecteur des nodes de nos pieces
-  std::vector<is::IMeshSceneNode*> vectorNodeCoins;
+  std::vector<coins> vectorCoins;
 
   // Création de la fenêtre et du système de rendu.
   IrrlichtDevice *device = createDevice(iv::EDT_OPENGL,
@@ -105,24 +106,15 @@ int main()
   ig::IGUIImage *score_10    = gui->addImage(ic::rect<s32>(130,10, 170,50)); score_10->setScaleImage(true);
   ig::IGUIImage *score_1     = gui->addImage(ic::rect<s32>(170,10, 210,50)); score_1->setScaleImage(true);
 
-
-
-  // Affichage des pieces
-  for( int i = 0; i < 3; i++)
+  // Creation of N set of coins:
+  int Nb_coinsSet = 1;
+  for( int i = 0; i < Nb_coinsSet; i++)
   {
-      is::IAnimatedMeshSceneNode *meshCoin = smgr->addAnimatedMeshSceneNode(smgr->getMesh("data/coin/coin.obj")); // chargement de notre piece
-      is::IMeshSceneNode *nodeCoin = smgr->addOctreeSceneNode(meshCoin->getMesh());
-      nodeCoin->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-      nodeCoin->setPosition(ic::vector3df(-200.0,10.0,-60.0));
-      nodeCoin->setScale(ic::vector3df(7,7,7));
-      ic::vector3df rotationCoin = nodeCoin->getRotation();
-      rotationCoin.X += 90;
-      nodeCoin->setRotation(rotationCoin);
-      ic::vector3df positionCoin = nodeCoin->getPosition();
-      positionCoin.X += -50*i;
-      std::cout<<positionCoin.X<<std::endl;
-      nodeCoin->setPosition(positionCoin);
-      vectorNodeCoins.push_back(nodeCoin);
+      ic::vector3df pos_begin(-200.0,10.0,-60.0);
+      ic::vector3df pos_end(-350.0,10.0,-60.0);
+      coins coinsSet(3,pos_begin,pos_end);
+      coinsSet.creation_vectorNodeCoins(smgr);
+      vectorCoins.push_back(coinsSet);
   }
 
   int score = 0;
@@ -131,28 +123,38 @@ int main()
     driver->beginScene(true, true, iv::SColor(100,150,200,255));
 
     // Gestion de nos pieces
-    for (unsigned int i = 0 ; i<vectorNodeCoins.size(); ++i)
+    for (unsigned int ii = 0 ; ii<vectorCoins.size(); ++ii)
     {
         // Rotation des pieces
-        ic::vector3df rotationCoins = vectorNodeCoins[i]->getRotation();
-        rotationCoins.Y += 5;
-        vectorNodeCoins[i]->setRotation(rotationCoins);
 
-        // Collision de notre personnage avec nos pieces
-        ic::vector3df positionPiece = vectorNodeCoins[i]->getPosition();
-        float diffX = camera->getPosition().X - positionPiece.X;
-        float diffY = camera->getPosition().Y - positionPiece.Y;
-        float diffZ = camera->getPosition().Z - positionPiece.Z;
-        float dist_perso_coins= sqrt(diffX*diffX + diffY*diffY + diffZ*diffZ);
-        if (dist_perso_coins <= 5) // Collisions dans ce cas
+        std::vector<is::IMeshSceneNode*> vectorNodeCoins = vectorCoins[ii].get_vectorNodeCoins();
+
+        for (unsigned int i = 0 ; i<vectorNodeCoins.size(); ++i)
         {
-            score += 1;
-            // Suppression de la piece de la scene
-            if(vectorNodeCoins[i])
+            ic::vector3df rotationCoins = vectorNodeCoins[i]->getRotation();
+            rotationCoins.Y += 5;
+            vectorNodeCoins[i]->setRotation(rotationCoins);
+
+            // Collision de notre personnage avec nos pieces
+            ic::vector3df positionPiece = vectorNodeCoins[i]->getPosition();
+            float diffX = camera->getPosition().X - positionPiece.X;
+            float diffY = camera->getPosition().Y - positionPiece.Y;
+            float diffZ = camera->getPosition().Z - positionPiece.Z;
+            float dist_perso_coins= sqrt(diffX*diffX + diffY*diffY + diffZ*diffZ);
+            if (dist_perso_coins <= 5) // Collisions dans ce cas
             {
-                smgr->addToDeletionQueue(vectorNodeCoins[i]);
-                // Suppression de la piece du vector
-                vectorNodeCoins.erase(vectorNodeCoins.begin() + i);
+                score += 1;
+                // Suppression de la piece de la scene
+                if(vectorNodeCoins[i])
+                {
+                    // Suppression de la piece de la scene
+                    smgr->addToDeletionQueue(vectorNodeCoins[i]);
+                    // Suppression de la piece du vector
+                    vectorCoins[ii].get_Nb_coins() = vectorCoins[ii].get_Nb_coins() - 1;
+                    vectorNodeCoins.erase(vectorNodeCoins.begin() + i);
+                    vectorCoins[ii].set_vectorNodeCoins(vectorNodeCoins);
+
+                }
             }
         }
     }

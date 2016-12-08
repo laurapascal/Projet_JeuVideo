@@ -1,4 +1,6 @@
 #include <irrlicht.h>
+#include <iostream>
+#include <vector>
 
 using namespace irr;
 
@@ -34,6 +36,10 @@ int main()
 {
   // Le gestionnaire d'événements
   MyEventReceiver receiver;
+
+  // Vecteur des nodes de nos pieces
+  std::vector<is::IMeshSceneNode*> vectorNodeCoins;
+
   // Création de la fenêtre et du système de rendu.
   IrrlichtDevice *device = createDevice(iv::EDT_OPENGL,
                                         ic::dimension2d<u32>(640, 480),
@@ -81,16 +87,16 @@ int main()
 
   // Chargement des textures pour le score
   iv::ITexture *digits[10];
-  digits[0] = driver->getTexture("data/0.png");
-  digits[1] = driver->getTexture("data/1.png");
-  digits[2] = driver->getTexture("data/2.png");
-  digits[3] = driver->getTexture("data/3.png");
-  digits[4] = driver->getTexture("data/4.png");
-  digits[5] = driver->getTexture("data/5.png");
-  digits[6] = driver->getTexture("data/6.png");
-  digits[7] = driver->getTexture("data/7.png");
-  digits[8] = driver->getTexture("data/8.png");
-  digits[9] = driver->getTexture("data/9.png");
+  digits[0] = driver->getTexture("data/score/0.png");
+  digits[1] = driver->getTexture("data/score/1.png");
+  digits[2] = driver->getTexture("data/score/2.png");
+  digits[3] = driver->getTexture("data/score/3.png");
+  digits[4] = driver->getTexture("data/score/4.png");
+  digits[5] = driver->getTexture("data/score/5.png");
+  digits[6] = driver->getTexture("data/score/6.png");
+  digits[7] = driver->getTexture("data/score/7.png");
+  digits[8] = driver->getTexture("data/score/8.png");
+  digits[9] = driver->getTexture("data/score/9.png");
 
   // Création des places pour les chiffres
   ig::IGUIImage *score_10000 = gui->addImage(ic::rect<s32>(10,10,  50,50)); score_10000->setScaleImage(true);
@@ -100,10 +106,56 @@ int main()
   ig::IGUIImage *score_1     = gui->addImage(ic::rect<s32>(170,10, 210,50)); score_1->setScaleImage(true);
 
 
+
+  // Affichage des pieces
+  for( int i = 0; i < 3; i++)
+  {
+      is::IAnimatedMeshSceneNode *meshCoin = smgr->addAnimatedMeshSceneNode(smgr->getMesh("data/coin/coin.obj")); // chargement de notre piece
+      is::IMeshSceneNode *nodeCoin = smgr->addOctreeSceneNode(meshCoin->getMesh());
+      nodeCoin->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+      nodeCoin->setPosition(ic::vector3df(-200.0,10.0,-60.0));
+      nodeCoin->setScale(ic::vector3df(7,7,7));
+      ic::vector3df rotationCoin = nodeCoin->getRotation();
+      rotationCoin.X += 90;
+      nodeCoin->setRotation(rotationCoin);
+      ic::vector3df positionCoin = nodeCoin->getPosition();
+      positionCoin.X += -50*i;
+      std::cout<<positionCoin.X<<std::endl;
+      nodeCoin->setPosition(positionCoin);
+      vectorNodeCoins.push_back(nodeCoin);
+  }
+
   int score = 0;
   while(device->run())
   {
     driver->beginScene(true, true, iv::SColor(100,150,200,255));
+
+    // Gestion de nos pieces
+    for (unsigned int i = 0 ; i<vectorNodeCoins.size(); ++i)
+    {
+        // Rotation des pieces
+        ic::vector3df rotationCoins = vectorNodeCoins[i]->getRotation();
+        rotationCoins.Y += 5;
+        vectorNodeCoins[i]->setRotation(rotationCoins);
+
+        // Collision de notre personnage avec nos pieces
+        ic::vector3df positionPiece = vectorNodeCoins[i]->getPosition();
+        float diffX = camera->getPosition().X - positionPiece.X;
+        float diffY = camera->getPosition().Y - positionPiece.Y;
+        float diffZ = camera->getPosition().Z - positionPiece.Z;
+        float dist_perso_coins= sqrt(diffX*diffX + diffY*diffY + diffZ*diffZ);
+        if (dist_perso_coins <= 5) // Collisions dans ce cas
+        {
+            score += 1;
+            // Suppression de la piece de la scene
+            if(vectorNodeCoins[i])
+            {
+                smgr->addToDeletionQueue(vectorNodeCoins[i]);
+                // Suppression de la piece du vector
+                vectorNodeCoins.erase(vectorNodeCoins.begin() + i);
+            }
+        }
+    }
 
     // Calcul du score :
     // TODO: incrémenter le score en fonction du game

@@ -150,10 +150,9 @@ int main()
                     // Suppression de la piece de la scene
                     smgr->addToDeletionQueue(vectorNodeCoins[i]);
                     // Suppression de la piece du vector
-                    vectorCoins[ii].get_Nb_coins() = vectorCoins[ii].get_Nb_coins() - 1;
+                    vectorCoins[ii].set_Nb_coins(vectorCoins[ii].get_Nb_coins() - 1);
                     vectorNodeCoins.erase(vectorNodeCoins.begin() + i);
                     vectorCoins[ii].set_vectorNodeCoins(vectorNodeCoins);
-
                 }
             }
         }

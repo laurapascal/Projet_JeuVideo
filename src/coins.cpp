@@ -10,9 +10,13 @@ coins::coins(int Nb_coins_param, ic::vector3df pos_begin_param, ic::vector3df po
 
 }
 
-int& coins::get_Nb_coins()
+int const& coins::get_Nb_coins() const
 {
     return Nb_coins;
+}
+void coins::set_Nb_coins(int new_nb_coins)
+{
+    Nb_coins = new_nb_coins;
 }
 ic::vector3df const& coins::get_pos_begin() const
 {

@@ -21,7 +21,8 @@ public:
     coins(int Nb_coins, ic::vector3df pos_begin_param, ic::vector3df pos_end_param);
 
 
-    int &get_Nb_coins();
+    int const& get_Nb_coins() const;
+    void set_Nb_coins(int new_nb_coins);
     ic::vector3df const& get_pos_begin() const;
     ic::vector3df const& get_pos_end() const;
     std::vector<is::IMeshSceneNode*> get_vectorNodeCoins();

@@ -50,8 +50,17 @@ std::vector<scene::IMeshSceneNode *> coins::creation_vectorNodeCoins(is::ISceneM
         rotationCoin.X += 90;
         nodeCoin->setRotation(rotationCoin);
         ic::vector3df positionCoin = nodeCoin->getPosition();
-        int step = std::fabs(pos_begin.X - pos_end.X)/(Nb_coins-1);
-        positionCoin.X -= step*i;
+        int step = 0;
+        if ( pos_begin.X - pos_end.X != 0 )
+        {
+            step = std::fabs(pos_begin.X - pos_end.X)/(Nb_coins-1);
+            positionCoin.X -= step*i;
+        }
+        else if ( pos_begin.Z - pos_end.Z != 0 )
+        {
+            step = std::fabs(pos_begin.Z - pos_end.Z)/(Nb_coins-1);
+            positionCoin.Z -= step*i;
+        }
         nodeCoin->setPosition(positionCoin);
         vectorNodeCoins.push_back(nodeCoin);
     }

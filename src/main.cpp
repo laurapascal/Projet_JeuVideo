@@ -3,6 +3,8 @@
 #include <vector>
 #include "coins.hpp"
 #include <cstdlib>
+#include "gui.h"
+#include "events.h"
 
 using namespace irr;
 
@@ -11,33 +13,11 @@ namespace is = irr::scene;
 namespace iv = irr::video;
 namespace ig = irr::gui;
 
-
-// Un gestionnaire d'événement ne gérant que la touche escape permettant de sortir du programme
-struct MyEventReceiver : IEventReceiver
-{
-  bool OnEvent(const SEvent &event)
-  {
-    // Si l'événement est de type clavier (KEY_INPUT)
-    // et du genre pressage de touche
-    // et que la touche est escape, on sort du programme
-    if (event.EventType == EET_KEY_INPUT_EVENT &&
-        event.KeyInput.PressedDown)
-    {
-      switch (event.KeyInput.Key)
-      {
-        case KEY_ESCAPE:
-          exit(0);
-        default:;
-      }
-    }
-    return false;
-  }
-};
-
 int main()
 {
+
   // Le gestionnaire d'événements
-  MyEventReceiver receiver;
+  EventReceiver receiver;
 
   // Création de la fenêtre et du système de rendu.
   IrrlichtDevice *device = createDevice(iv::EDT_OPENGL,
@@ -47,7 +27,6 @@ int main()
   iv::IVideoDriver  *driver = device->getVideoDriver();
   is::ISceneManager *smgr = device->getSceneManager();
   ig::IGUIEnvironment *gui  = device->getGUIEnvironment();
-
 
   // Ajout de l'archive qui contient entre autres un niveau complet
   device->getFileSystem()->addFileArchive("data/map-20kdm2.pk3");
@@ -105,6 +84,16 @@ int main()
   ig::IGUIImage *score_1     = gui->addImage(ic::rect<s32>(170,10, 210,50)); score_1->setScaleImage(true);
 
 
+  // Création de notre Gui
+  // Choix de la police de caractères
+  ig::IGUISkin* skin = gui->getSkin();
+  ig::IGUIFont* font = gui->getFont("data/fontlucida.png");
+  skin->setFont(font);
+
+
+  // Une fenêtre pour différents réglages lorsque l'utilisateur appuie sur la touche "m"
+//  create_window(gui);
+
   // Vecteur des nodes de nos pièces
   std::vector<coins> vectorCoins;
 
@@ -141,6 +130,10 @@ int main()
   int score = 0;
   while(device->run())
   {
+    // Lorsque l'utilisateur appuie sur la touche "m" un menu s'affiche pour pouvoir changer d'arme
+    if(receiver.display_menu)
+        gui_creation(gui);
+
     driver->beginScene(true, true, iv::SColor(100,150,200,255));
 
     // Gestion de nos pièces
@@ -207,7 +200,9 @@ int main()
 
     // Dessin de la scène :
     smgr->drawAll();
+    // Dessin de l'interface utilisateur :
     gui->drawAll();
+
     driver->endScene();
   }
   device->drop();

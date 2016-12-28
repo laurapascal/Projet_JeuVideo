@@ -1,0 +1,15 @@
+# Blender MTL File: 'Submachine Gun M24 R_Done.blend'
+# Material Count: 1
+
+newmtl Material
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.104588 0.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Bump textures/Material_Normal_OpenGL_Kopie.jpg
+map_Kd textures/smg_low_2_Material_SpecularSmoothness.jpg
+map_Ks textures/smg_low_2_Material_BaseColor_Kopie.jpg

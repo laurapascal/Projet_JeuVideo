@@ -1,4 +1,10 @@
 #include <irrlicht.h>
+#include <irrlicht.h>
+#include <iostream>
+#include <vector>
+#include <cstdlib>
+#include "events.h"
+#include <iostream>
 
 using namespace irr;
 
@@ -8,32 +14,10 @@ namespace iv = irr::video;
 namespace ig = irr::gui;
 
 
-// Un gestionnaire d'événement ne gérant que la touche escape permettant de sortir du programme
-struct MyEventReceiver : IEventReceiver
-{
-  bool OnEvent(const SEvent &event)
-  {
-    // Si l'événement est de type clavier (KEY_INPUT)
-    // et du genre pressage de touche
-    // et que la touche est escape, on sort du programme
-    if (event.EventType == EET_KEY_INPUT_EVENT &&
-        event.KeyInput.PressedDown)
-    {
-      switch (event.KeyInput.Key)
-      {
-        case KEY_ESCAPE:
-          exit(0);
-        default:;
-      }
-    }
-    return false;
-  }
-};
-
 int main()
 {
   // Le gestionnaire d'événements
-  MyEventReceiver receiver;
+   EventReceiver receiver;
   // Création de la fenêtre et du système de rendu.
   IrrlichtDevice *device = createDevice(iv::EDT_OPENGL,
                                         ic::dimension2d<u32>(640, 480),
@@ -56,18 +40,27 @@ int main()
   scene::ITriangleSelector *selector;
   selector = smgr->createOctreeTriangleSelector(node->getMesh(), node);
   node->setTriangleSelector(selector);
+  SKeyMap keyMap[5];
+  keyMap[0].Action = EKA_MOVE_FORWARD;
+  keyMap[0].KeyCode = KEY_KEY_Z;
+  keyMap[1].Action = EKA_MOVE_BACKWARD;
+  keyMap[1].KeyCode = KEY_KEY_S;
+  keyMap[2].Action = EKA_STRAFE_LEFT ;
+  keyMap[2].KeyCode = KEY_KEY_Q;
+  keyMap[3].Action = EKA_STRAFE_RIGHT;
+  keyMap[3].KeyCode = KEY_KEY_D;
+  keyMap[4].Action = EKA_JUMP_UP;
+  keyMap[4].KeyCode = KEY_SPACE;
 
   // Création de la caméra
   scene::ICameraSceneNode* camera =
     smgr->addCameraSceneNodeFPS(nullptr,
-                                100,         // Vitesse de rotation
+                                10,         // Vitesse de rotation
                                 .3,          // Vitesse de déplacement
                                 -1,          // Identifiant
-                                nullptr, 0,  // Table de changement de touches
+                                keyMap, 5,  // Table de changement de touches
                                 true,        // Pas de possibilité de voler
-                                3);          // Vitesse saut
-  camera->setPosition(ic::vector3df(50, 50, -60));
-  camera->setTarget(ic::vector3df(-70, 30, -60));
+                                3);
 
   // Et l'animateur/collisionneur
   scene::ISceneNodeAnimator *anim;
@@ -77,6 +70,33 @@ int main()
                                                ic::vector3df(0, -10, 0),  // gravité
                                                ic::vector3df(0, 30, 0));  // décalage du centre
   camera->addAnimator(anim);
+
+  //Chargement de la cible
+  ig::IGUIImage *target;
+  iv::ITexture *target_texture;
+  target_texture=driver->getTexture("data/Weapons/target.png");
+  target = gui->addImage(ic::rect<s32>(300,220,  340,260));
+  target->setScaleImage(true);
+  target->setImage(target_texture);
+
+  // Chargement de l'arme
+  ///Weapon 1
+//  is::IAnimatedMesh *weapon = smgr->getMesh("data/Weapons/weapon1/weapon1.obj");
+//  is::IAnimatedMeshSceneNode *node_weapon = smgr->addAnimatedMeshSceneNode(weapon,camera);
+//  node_weapon->setMD2Animation(is::EMAT_CROUCH_STAND );
+//  node_weapon->setPosition(ic::vector3df(1.0, -0.5, 1.5));
+//  node_weapon->setScale(ic::vector3df(0.5,0.5,0.5));
+//  node_weapon->setRotation(ic::vector3df(0, 90, 0));
+//  node_weapon->setMaterialFlag(iv::EMF_LIGHTING, false);
+
+  ///Weapon 2
+  is::IAnimatedMesh *weapon = smgr->getMesh("data/Weapons/weapon2/weapon2.obj");
+  is::IAnimatedMeshSceneNode *node_weapon = smgr->addAnimatedMeshSceneNode(weapon,camera);
+  node_weapon->setMD2Animation(is::EMAT_CROUCH_STAND );
+  node_weapon->setPosition(ic::vector3df(2, -0.5, 2.0));
+  node_weapon->setRotation(ic::vector3df(0, 0, 0));
+  node_weapon->setScale(ic::vector3df(0.05,0.05,0.05));
+  node_weapon->setMaterialFlag(iv::EMF_LIGHTING, false);
 
 
   // Chargement des textures pour le score
@@ -101,10 +121,26 @@ int main()
 
 
   int score = 0;
+  int fire_display = false;
+  ig::IGUIImage *fire;
+  iv::ITexture *fire_texture;
   while(device->run())
   {
     driver->beginScene(true, true, iv::SColor(100,150,200,255));
-
+    if(receiver.display_fire && !fire_display)
+    {
+        //Chargement de la flame au canon
+        fire_texture=driver->getTexture("data/Weapons/fire.png");
+        fire = gui->addImage(ic::rect<s32>(430,220,  470,260));
+        fire->setScaleImage(true);
+        fire->setImage(fire_texture);
+        fire_display = true;
+    }
+    else if(!receiver.display_fire && fire_display)
+    {
+        fire->remove();
+        fire_display = false;
+    }
     // Calcul du score :
     // TODO: incrémenter le score en fonction du game
     // Mise à jour du score :

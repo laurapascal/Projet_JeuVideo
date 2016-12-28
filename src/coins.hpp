@@ -25,11 +25,11 @@ public:
     void set_Nb_coins(int new_nb_coins);
     ic::vector3df const& get_pos_begin() const;
     ic::vector3df const& get_pos_end() const;
-    std::vector<is::IMeshSceneNode*> get_vectorNodeCoins();
-    void set_vectorNodeCoins(std::vector<is::IMeshSceneNode*> vectorNodeCoins_param);
+    std::vector<is::IAnimatedMeshSceneNode*> get_vectorNodeCoins();
+    void set_vectorNodeCoins(std::vector<is::IAnimatedMeshSceneNode*> vectorNodeCoins_param);
 
     /** Creation of a vector containing Nb_coins coins nodes**/
-    std::vector<scene::IMeshSceneNode *> creation_vectorNodeCoins(is::ISceneManager *smgr);
+    std::vector<scene::IAnimatedMeshSceneNode *> creation_vectorNodeCoins(is::ISceneManager *smgr);
 
 private:
     /** Number of coins in the vector vectorNodeCoins **/
@@ -39,7 +39,7 @@ private:
     /** Number of the last coin **/
     ic::vector3df pos_end;
     /** Vector containing the coins nodes **/
-    std::vector<is::IMeshSceneNode*> vectorNodeCoins;
+    std::vector<is::IAnimatedMeshSceneNode*> vectorNodeCoins;
 
 };
 

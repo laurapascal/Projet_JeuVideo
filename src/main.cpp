@@ -79,25 +79,15 @@ int main()
   target->setScaleImage(true);
   target->setImage(target_texture);
 
-  // Chargement de l'arme
+  // Chargement de l'arme initiale
   ///Weapon 1
-//  is::IAnimatedMesh *weapon = smgr->getMesh("data/Weapons/weapon1/weapon1.obj");
-//  is::IAnimatedMeshSceneNode *node_weapon = smgr->addAnimatedMeshSceneNode(weapon,camera);
-//  node_weapon->setMD2Animation(is::EMAT_CROUCH_STAND );
-//  node_weapon->setPosition(ic::vector3df(1.0, -0.5, 1.5));
-//  node_weapon->setScale(ic::vector3df(0.5,0.5,0.5));
-//  node_weapon->setRotation(ic::vector3df(0, 90, 0));
-//  node_weapon->setMaterialFlag(iv::EMF_LIGHTING, false);
-
-  ///Weapon 2
-  is::IAnimatedMesh *weapon = smgr->getMesh("data/Weapons/weapon2/weapon2.obj");
+  is::IAnimatedMesh *weapon = smgr->getMesh("data/Weapons/weapon1/weapon1.obj");
   is::IAnimatedMeshSceneNode *node_weapon = smgr->addAnimatedMeshSceneNode(weapon,camera);
   node_weapon->setMD2Animation(is::EMAT_CROUCH_STAND );
-  node_weapon->setPosition(ic::vector3df(2, -0.5, 2.0));
-  node_weapon->setRotation(ic::vector3df(0, 0, 0));
-  node_weapon->setScale(ic::vector3df(0.05,0.05,0.05));
+  node_weapon->setPosition(ic::vector3df(1.0, -0.5, 1.5));
+  node_weapon->setScale(ic::vector3df(0.5,0.5,0.5));
+  node_weapon->setRotation(ic::vector3df(0, 90, 0));
   node_weapon->setMaterialFlag(iv::EMF_LIGHTING, false);
-
 
   // Chargement des textures pour le score
   iv::ITexture *digits[10];
@@ -160,6 +150,37 @@ int main()
   while(device->run())
   {
     driver->beginScene(true, true, iv::SColor(100,150,200,255));
+
+    // Gestion de nos armes
+    if(receiver.display_arme1)
+    {
+        // Suppression de l'arme 2
+        smgr->addToDeletionQueue(node_weapon);
+
+        //Affichage de l'arme 1
+        weapon = smgr->getMesh("data/Weapons/weapon1/weapon1.obj");
+        node_weapon = smgr->addAnimatedMeshSceneNode(weapon,camera);
+        node_weapon->setMD2Animation(is::EMAT_CROUCH_STAND );
+        node_weapon->setPosition(ic::vector3df(1.0, -0.5, 1.5));
+        node_weapon->setScale(ic::vector3df(0.5,0.5,0.5));
+        node_weapon->setRotation(ic::vector3df(0, 90, 0));
+        node_weapon->setMaterialFlag(iv::EMF_LIGHTING, false);
+    }
+
+    if(receiver.display_arme2)
+    {
+        // Suppression de l'arme 1
+        smgr->addToDeletionQueue(node_weapon);
+
+//        //Affichage de l'arme 2
+        weapon = smgr->getMesh("data/Weapons/weapon2/weapon2.obj");
+        node_weapon = smgr->addAnimatedMeshSceneNode(weapon,camera);
+        node_weapon->setMD2Animation(is::EMAT_CROUCH_STAND );
+        node_weapon->setPosition(ic::vector3df(2, -0.5, 2.0));
+        node_weapon->setRotation(ic::vector3df(0, 0, 0));
+        node_weapon->setScale(ic::vector3df(0.05,0.05,0.05));
+        node_weapon->setMaterialFlag(iv::EMF_LIGHTING, false);
+    }
 
     // Gestion de nos pièces
     for (unsigned int ii = 0 ; ii<vectorCoins.size(); ++ii)

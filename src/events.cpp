@@ -46,14 +46,13 @@ bool EventReceiver::mouse_handler(const SEvent &event)
     case EMIE_LMOUSE_PRESSED_DOWN:
         display_fire = true;
         break;
-
     case EMIE_LMOUSE_LEFT_UP:
         display_fire = false;
         break;
-
-    case EMIE_MOUSE_MOVED:
-        ;
-
+    case EMIE_MOUSE_WHEEL:
+        display_arme1 = !display_arme1;
+        display_arme2 = !display_arme2;
+        break;
     default:;
     }
 

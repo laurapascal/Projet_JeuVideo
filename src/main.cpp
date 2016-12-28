@@ -71,6 +71,18 @@ int main()
                                                ic::vector3df(0, 30, 0));  // décalage du centre
   camera->addAnimator(anim);
 
+  // Chargement de nos ennemis zombie
+  is::IAnimatedMesh *ennemi_zombie = smgr->getMesh("data/ennemis_zombie/tris.md2");
+    // Attachement de notre personnage dans la scène
+  is::IAnimatedMeshSceneNode *node_ennemi_zombie = smgr->addAnimatedMeshSceneNode(ennemi_zombie);
+  node_ennemi_zombie->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+  node_ennemi_zombie->setMD2Animation(irr::scene::EMAT_STAND);
+  node_ennemi_zombie->setPosition(ic::vector3df(-200.0,0.0,-60.0));
+  iv::ITexture* texture_ennemi_zombie = driver->getTexture("data/ennemis_zombie/base.pcx");
+  node_ennemi_zombie->setMaterialTexture(0, texture_ennemi_zombie);
+  node_ennemi_zombie->setMD2Animation(irr::scene::EMAT_RUN);
+
+
   //Chargement de la cible
   ig::IGUIImage *target;
   iv::ITexture *target_texture;
@@ -150,6 +162,11 @@ int main()
   while(device->run())
   {
     driver->beginScene(true, true, iv::SColor(100,150,200,255));
+
+    // Gestion de nos ennemis zombie
+    ic::vector3df position_ennemi_zombie = node_ennemi_zombie->getPosition();
+    position_ennemi_zombie.X += 2;
+    node_ennemi_zombie->setPosition(position_ennemi_zombie);
 
     // Gestion de nos armes
     if(receiver.display_arme1)

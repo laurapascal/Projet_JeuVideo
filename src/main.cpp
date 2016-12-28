@@ -1,9 +1,10 @@
 #include <irrlicht.h>
 #include <iostream>
 #include <vector>
-#include "coins.hpp"
 #include <cstdlib>
 #include "events.h"
+#include "coins.hpp"
+#include "objet.hpp"
 
 using namespace irr;
 
@@ -79,6 +80,13 @@ int main()
   target->setScaleImage(true);
   target->setImage(target_texture);
 
+  std::vector<objet> decoration;
+  decoration.push_back(objet(ic::vector3df(256.0 ,-16.0 ,45.0),ic::vector3df(-90.0 ,-135.0 ,0.0),ic::vector3df(2.0 ,2.0 ,2.0), objet::armor1, smgr));
+  decoration.push_back(objet(ic::vector3df(-150.0 ,-16.0 ,-160.0),ic::vector3df(-90.0 ,45.0 ,0.0),ic::vector3df(2.0 ,2.0 ,2.0), objet::armor2, smgr));
+  decoration.push_back(objet(ic::vector3df(100.0 ,-28.0 ,100.0),ic::vector3df(180.0 ,0.0 ,0.0),ic::vector3df(20.0 ,20.0 ,20.0), objet::box, smgr));
+  decoration.push_back(objet(ic::vector3df(130.0 ,-60.0 ,-200.0),ic::vector3df(0.0 ,90.0 ,0.0),ic::vector3df(13.0 ,13.0 ,13.0), objet::chest, smgr));
+  decoration.push_back(objet(ic::vector3df(-160.0 ,-60.0 ,90.0),ic::vector3df(0.0 ,0.0 ,0.0),ic::vector3df(8.0 ,8.0 ,8.0), objet::wood, smgr));
+
   // Chargement de l'arme
   ///Weapon 1
 //  is::IAnimatedMesh *weapon = smgr->getMesh("data/Weapons/weapon1/weapon1.obj");
@@ -97,7 +105,6 @@ int main()
   node_weapon->setRotation(ic::vector3df(0, 0, 0));
   node_weapon->setScale(ic::vector3df(0.05,0.05,0.05));
   node_weapon->setMaterialFlag(iv::EMF_LIGHTING, false);
-
 
   // Chargement des textures pour le score
   iv::ITexture *digits[10];
@@ -161,11 +168,15 @@ int main()
   {
     driver->beginScene(true, true, iv::SColor(100,150,200,255));
 
+    std::cout<<"X: "<<camera->getPosition().X<<std::endl;
+    std::cout<<"Y: "<<camera->getPosition().Y<<std::endl;
+    std::cout<<"Z: "<<camera->getPosition().Z<<std::endl;
+
     // Gestion de nos pièces
     for (unsigned int ii = 0 ; ii<vectorCoins.size(); ++ii)
     {
 
-        std::vector<is::IMeshSceneNode*> vectorNodeCoins = vectorCoins[ii].get_vectorNodeCoins();
+        std::vector<is::IAnimatedMeshSceneNode*> vectorNodeCoins = vectorCoins[ii].get_vectorNodeCoins();
 
         for (unsigned int i = 0 ; i<vectorNodeCoins.size(); ++i)
         {

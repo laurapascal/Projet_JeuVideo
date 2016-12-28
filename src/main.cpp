@@ -234,11 +234,13 @@ int main()
         }
     }
 
+    // Gestion de la flame du canon
     if(receiver.display_fire && !fire_display)
     {
         //Chargement de la flame au canon
         fire_texture=driver->getTexture("data/Weapons/fire.png");
-        fire = gui->addImage(ic::rect<s32>(430,220,  470,260));
+        if(receiver.display_arme1) fire = gui->addImage(ic::rect<s32>(450,260,  490,300));
+        if(receiver.display_arme2) fire = gui->addImage(ic::rect<s32>(430,220,  470,260));
         fire->setScaleImage(true);
         fire->setImage(fire_texture);
         fire_display = true;
@@ -248,6 +250,8 @@ int main()
         fire->remove();
         fire_display = false;
     }
+
+
     // Calcul du score :
     // TODO: incrémenter le score en fonction du game
     // Mise à jour du score :

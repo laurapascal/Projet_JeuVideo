@@ -15,6 +15,8 @@ class EventReceiver : public irr::IEventReceiver
 public:
   EventReceiver();
   bool display_fire = false;
+  bool display_arme1 = true;
+  bool display_arme2 = false;
   void set_gui(irr::gui::IGUIEnvironment *gui);
 
 };

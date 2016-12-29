@@ -224,9 +224,9 @@ int main()
             }
             collision_objet[i] = true;
             // Si le joueur a appuyé sur E
-            if(receiver.secouer_objet)
+            if(receiver.fouiller_objet)
             {
-                receiver.secouer_objet = false;
+                receiver.fouiller_objet = false;
                 remove_message(window);
                 ouverture_message[i] = false;
             }

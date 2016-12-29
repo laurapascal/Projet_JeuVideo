@@ -6,6 +6,7 @@
 #include "zombie.hpp"
 #include "coins.hpp"
 #include "objet.hpp"
+#include "gui.h"
 
 using namespace irr;
 
@@ -203,8 +204,8 @@ int main()
         if (dist_perso_coins <= 100)
         {
             std::cout<<"Je suis prêt d'un objet appuyé sur 'e' pour le secouer!"<<std::endl;
+            gui_creation(gui);
         }
-
     }
 
     // Gestion de nos ennemis zombie

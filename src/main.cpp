@@ -156,16 +156,36 @@ int main()
 
   // Création of N set of coins:
     // Initialisation des set de coins : position de départ, position de fin, et nombre de pièces
-  int Nb_coinsSet = 4;
+  int Nb_coinsSet = 13;
   ic::vector3df pos_begin[Nb_coinsSet] = {ic::vector3df(-200.0,10.0,-60.0),
                                           ic::vector3df(60.0,10.0,23.0),
                                           ic::vector3df(210.0,10.0,-134.0),
-                                          ic::vector3df(282.0,10.0,70.0)};
-  ic::vector3df pos_end[Nb_coinsSet] = {ic::vector3df(-350.0,10.0,-60.0),
+                                          ic::vector3df(282.0,10.0,0.0),
+                                          ic::vector3df(280.0,140.0,320.0),
+                                          ic::vector3df(760.0,270.0,840.0),
+                                          ic::vector3df(570.0,364.0,235.0),
+                                          ic::vector3df(225.0,364.0,325.0),
+                                          ic::vector3df(-450.0,364.0,210.0),
+                                          ic::vector3df(185.0,206.0,-970.0),
+                                          ic::vector3df(-97.0,142.0,-450.0),
+                                          ic::vector3df(-450.0,142.0,-217.0),
+                                          ic::vector3df(570.0,142.0,174.0)
+                                         };
+  ic::vector3df pos_end[Nb_coinsSet] = {ic::vector3df(-280.0,10.0,-60.0),
                                         ic::vector3df(-120.0,10.0,23.0),
                                         ic::vector3df(-65.0,10.0,-134.0),
-                                        ic::vector3df(282.0,10.0,-153.0)};
-  int nb_coins[Nb_coinsSet] = {3, 4, 3, 6};
+                                        ic::vector3df(282.0,10.0,-153.0),
+                                        ic::vector3df(720.0,140.0,320.0),
+                                        ic::vector3df(420.0,270.0,840.0),
+                                        ic::vector3df(570.0,364.0,-500.0),
+                                        ic::vector3df(-310.0,364.0,325.0),
+                                        ic::vector3df(-450.0,364.0,-130.0),
+                                        ic::vector3df(-147.0,206.0,-970.0),
+                                        ic::vector3df(-524.0,142.0,-450.0),
+                                        ic::vector3df(-450.0,142.0,310.0),
+                                        ic::vector3df(570.0,142.0,-450.0),
+                                       };
+  int nb_coins[Nb_coinsSet] = {3, 4, 3, 6, 5, 4, 7, 6, 3, 3, 4, 3, 5};
   std::vector<int> set_selection;
   for( int i = 0; i < Nb_coinsSet; i++)
   {
@@ -173,7 +193,7 @@ int main()
   }
   std::vector<int> selected_set;
     // Affichage des set de pièces sélectionnées
-  int Nb_coinsSet_display = 2;
+  int Nb_coinsSet_display = 6;
   for( int i = 0; i < Nb_coinsSet_display; i++)
   {
       int j = rand() % set_selection.size();

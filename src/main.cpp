@@ -68,11 +68,25 @@ int main()
   //Création du décor
   std::vector<objet> decoration;
   decoration.push_back(objet(ic::vector3df(256.0 ,-16.0 ,45.0),ic::vector3df(-90.0 ,-135.0 ,0.0),ic::vector3df(2.0 ,2.0 ,2.0), objet::armor1, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(55.0 ,179.0 ,-1050.0),ic::vector3df(-90.0 ,0.0 ,0.0),ic::vector3df(2.0 ,2.0 ,2.0), objet::armor1, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(680.0 ,243.0 ,1025.0),ic::vector3df(-90.0 ,225.0 ,0.0),ic::vector3df(2.0 ,2.0 ,2.0), objet::armor1, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(-580.0 ,115.0 ,-555.0),ic::vector3df(-90.0 ,45.0 ,0.0),ic::vector3df(2.0 ,2.0 ,2.0), objet::armor1, smgr, meta_selector));
   decoration.push_back(objet(ic::vector3df(-150.0 ,-16.0 ,-160.0),ic::vector3df(-90.0 ,45.0 ,0.0),ic::vector3df(2.0 ,2.0 ,2.0), objet::armor2, smgr, meta_selector));
-  decoration.push_back(objet(ic::vector3df(100.0 ,-28.0 ,100.0),ic::vector3df(180.0 ,0.0 ,0.0),ic::vector3df(20.0 ,20.0 ,20.0), objet::box, smgr, meta_selector));
-  decoration.push_back(objet(ic::vector3df(130.0 ,-60.0 ,-200.0),ic::vector3df(0.0 ,90.0 ,0.0),ic::vector3df(13.0 ,13.0 ,13.0), objet::chest, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(250.0 ,115.0 ,-340.0),ic::vector3df(-90.0 ,-135.0 ,0.0),ic::vector3df(2.0 ,2.0 ,2.0), objet::armor2, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(-570.0 ,275.0 ,-1010.0),ic::vector3df(-90.0 ,45.0 ,0.0),ic::vector3df(2.0 ,2.0 ,2.0), objet::armor2, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(63.0 ,339.0 ,505.0),ic::vector3df(-90.0 ,180.0 ,0.0),ic::vector3df(2.0 ,2.0 ,2.0), objet::armor2, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(-120.0 ,90.0 ,450.0),ic::vector3df(180.0 ,0.0 ,0.0),ic::vector3df(20.0 ,20.0 ,20.0), objet::box, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(210.0 ,280.0 ,-60.0),ic::vector3df(180.0 ,0.0 ,0.0),ic::vector3df(20.0 ,20.0 ,20.0), objet::box, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(442.0 ,-45.0 ,-65.0),ic::vector3df(180.0 ,0.0 ,0.0),ic::vector3df(20.0 ,20.0 ,20.0), objet::box, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(-470.0 ,310.0 ,344.0),ic::vector3df(180.0 ,0.0 ,0.0),ic::vector3df(20.0 ,20.0 ,20.0), objet::box, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(-325.0 ,-60.0 ,-45.0),ic::vector3df(0.0 ,-90.0 ,0.0),ic::vector3df(13.0 ,13.0 ,13.0), objet::chest, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(-460.0 ,280.0 ,-240.0),ic::vector3df(0.0 ,180.0 ,0.0),ic::vector3df(13.0 ,13.0 ,13.0), objet::chest, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(-450.0 ,60.0 ,450.0),ic::vector3df(0.0 ,0.0 ,0.0),ic::vector3df(13.0 ,13.0 ,13.0), objet::chest, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(570.0 ,60.0 ,-540.0),ic::vector3df(0.0 ,180.0 ,0.0),ic::vector3df(13.0 ,13.0 ,13.0), objet::chest, smgr, meta_selector));
   decoration.push_back(objet(ic::vector3df(-160.0 ,-60.0 ,90.0),ic::vector3df(0.0 ,0.0 ,0.0),ic::vector3df(8.0 ,8.0 ,8.0), objet::wood, smgr, meta_selector));
-
+  decoration.push_back(objet(ic::vector3df(560.0 ,70.0 ,450.0),ic::vector3df(0.0 ,0.0 ,0.0),ic::vector3df(8.0 ,8.0 ,8.0), objet::wood, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(683.0 ,230.0 ,-1000.0),ic::vector3df(0.0 ,-45.0 ,0.0),ic::vector3df(8.0 ,8.0 ,8.0), objet::wood, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(-95.0 ,260.0 ,-40.0),ic::vector3df(0.0 ,90.0 ,0.0),ic::vector3df(8.0 ,8.0 ,8.0), objet::wood, smgr, meta_selector));
 
   // Et l'animateur/collisionneur
   scene::ISceneNodeAnimator *anim;
@@ -172,10 +186,6 @@ int main()
   {
     driver->beginScene(true, true, iv::SColor(100,150,200,255));
 
-    std::cout<<"X: "<<camera->getPosition().X<<std::endl;
-    std::cout<<"Y: "<<camera->getPosition().Y<<std::endl;
-    std::cout<<"Z: "<<camera->getPosition().Z<<std::endl;
-
     //gestion des collisions avec les objets
 
     // Gestion de nos pièces
@@ -244,8 +254,7 @@ int main()
         fire->remove();
         fire_display = false;
     }
-    // Calcul du score :
-    // TODO: incrémenter le score en fonction du game
+
     // Mise à jour du score :
     score_10000->setImage(digits[(score / 10000) % 10]);
     score_1000->setImage(digits[(score / 1000) % 10]);

@@ -192,6 +192,21 @@ int main()
   {
     driver->beginScene(true, true, iv::SColor(100,150,200,255));
 
+    // Gestion de nos objets
+    for (unsigned int i = 0 ; i<decoration.size(); ++i)
+    {
+        ic::vector3df positionObjet = decoration[i].get_position();
+        float diffX = camera->getPosition().X - positionObjet.X;
+        float diffY = camera->getPosition().Y - positionObjet.Y;
+        float diffZ = camera->getPosition().Z - positionObjet.Z;
+        float dist_perso_coins= sqrt(diffX*diffX + diffY*diffY + diffZ*diffZ);
+        if (dist_perso_coins <= 100)
+        {
+            std::cout<<"Je suis prêt d'un objet appuyé sur 'e' pour le secouer!"<<std::endl;
+        }
+
+    }
+
     // Gestion de nos ennemis zombie
     for (unsigned int i = 0 ; i<vector_zombies.size(); ++i)
     {
@@ -261,19 +276,6 @@ int main()
 
         std::vector<is::IAnimatedMeshSceneNode*> vectorNodeCoins = vectorCoins[ii].get_vectorNodeCoins();
 
-        for (unsigned int i = 0 ; i<decoration.size(); ++i)
-        {
-            ic::vector3df positionObjet = decoration[i].get_position();
-            float diffX = camera->getPosition().X - positionObjet.X;
-            float diffY = camera->getPosition().Y - positionObjet.Y;
-            float diffZ = camera->getPosition().Z - positionObjet.Z;
-            float dist_perso_coins= sqrt(diffX*diffX + diffY*diffY + diffZ*diffZ);
-            if (dist_perso_coins <= 100)
-            {
-                std::cout<<"Je suis prêt d'un objet appuyé sur 'e' pour le secouer!"<<std::endl;
-            }
-
-        }
         for (unsigned int i = 0 ; i<vectorNodeCoins.size(); ++i)
         {
             // Rotation des pièces

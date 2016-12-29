@@ -4,6 +4,7 @@
 #include "coins.hpp"
 #include <cstdlib>
 #include "events.h"
+#include "zombie.hpp"
 
 using namespace irr;
 
@@ -72,6 +73,18 @@ int main()
                                                ic::vector3df(0, -10, 0),  // gravité
                                                ic::vector3df(0, 30, 0));  // décalage du centre
   camera->addAnimator(anim);
+
+  // Chargement de nos ennemis zombie
+  std::vector<zombie> vector_zombies;
+  int Nb_zombies = 2;
+  ic::vector3df pos_begin_zombie[Nb_zombies] = {ic::vector3df(-200.0,-40.0,-60.0), ic::vector3df(49.0,-40.0,-180.0)};
+  ic::vector3df pos_end_zombie[Nb_zombies] = {ic::vector3df(0.0,-40.0,-60.0), ic::vector3df(49.0,-40.0,70.0)};
+  for( int i = 0; i < Nb_zombies; i++)
+  {
+    zombie Zombie(pos_begin_zombie[i],pos_end_zombie[i]);
+    Zombie.creation_nodeZombie(smgr, driver);
+    vector_zombies.push_back(Zombie);
+  }
 
   //Chargement de la cible
   ig::IGUIImage *target;
@@ -152,6 +165,37 @@ int main()
   while(device->run())
   {
     driver->beginScene(true, true, iv::SColor(100,150,200,255));
+
+    // Gestion de nos ennemis zombie
+    for (unsigned int i = 0 ; i<vector_zombies.size(); ++i)
+    {
+        // Cent pas du zombie
+        zombie Zombie = vector_zombies[i];
+        is::IAnimatedMeshSceneNode* nodeZombie = Zombie.get_nodeZombie();
+        ic::vector3df position_zombie = nodeZombie->getPosition();
+        ic::vector3df rotation_zombie = nodeZombie->getRotation();
+        if(Zombie.get_pos_begin().X != Zombie.get_pos_end().X)
+        {
+            if( (int)rotation_zombie.Y % 360 == 0)
+                position_zombie.X += 2;
+            else if ((int)rotation_zombie.Y % 360 == 180)
+                position_zombie.X -= 2;
+            if(position_zombie.X == Zombie.get_pos_end().X || position_zombie.X == Zombie.get_pos_begin().X)
+                rotation_zombie.Y += 180;
+        }
+        if(Zombie.get_pos_begin().Z != Zombie.get_pos_end().Z)
+        {
+            if( (int)rotation_zombie.Y % 360 == 90)
+                position_zombie.Z -= 2;
+            else if ((int)rotation_zombie.Y % 360 == 270)
+                position_zombie.Z += 2;
+            if(position_zombie.Z == Zombie.get_pos_end().Z || position_zombie.Z == Zombie.get_pos_begin().Z)
+                rotation_zombie.Y += 180;
+        }
+        nodeZombie->setRotation(rotation_zombie);
+        nodeZombie->setPosition(position_zombie);
+    }
+
 
     // Gestion de nos armes
     if(receiver.display_arme1)

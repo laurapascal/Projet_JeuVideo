@@ -61,6 +61,8 @@ int main()
                                 keyMap, 5,  // Table de changement de touches
                                 true,        // Pas de possibilité de voler
                                 3);
+  camera->setPosition(ic::vector3df(50, 50, -60));
+  camera->setTarget(ic::vector3df(-70, 30, -60));
 
   // Et l'animateur/collisionneur
   scene::ISceneNodeAnimator *anim;

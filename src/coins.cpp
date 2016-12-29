@@ -26,23 +26,23 @@ ic::vector3df const& coins::get_pos_end() const
 {
     return pos_end;
 }
-std::vector<scene::IMeshSceneNode *> coins::get_vectorNodeCoins()
+std::vector<scene::IAnimatedMeshSceneNode *> coins::get_vectorNodeCoins()
 {
     return vectorNodeCoins;
 }
 
-void coins::set_vectorNodeCoins(std::vector<is::IMeshSceneNode*> vectorNodeCoins_param)
+void coins::set_vectorNodeCoins(std::vector<is::IAnimatedMeshSceneNode*> vectorNodeCoins_param)
 {
     vectorNodeCoins = vectorNodeCoins_param;
 }
 
 
-std::vector<scene::IMeshSceneNode *> coins::creation_vectorNodeCoins(is::ISceneManager *smgr)
+std::vector<scene::IAnimatedMeshSceneNode *> coins::creation_vectorNodeCoins(is::ISceneManager *smgr)
 {
     for( int i = 0; i < Nb_coins; i++)
     {
-        is::IAnimatedMeshSceneNode *meshCoin = smgr->addAnimatedMeshSceneNode(smgr->getMesh("data/coin/coin.obj")); // chargement de notre piece
-        is::IMeshSceneNode *nodeCoin = smgr->addOctreeSceneNode(meshCoin->getMesh());
+        is::IAnimatedMesh *mesh = smgr->getMesh("data/coin/coin.obj");
+        is::IAnimatedMeshSceneNode *nodeCoin = smgr->addAnimatedMeshSceneNode(mesh); // chargement de notre piece
         nodeCoin->setMaterialFlag(irr::video::EMF_LIGHTING, false);
         nodeCoin->setPosition(pos_begin);
         nodeCoin->setScale(ic::vector3df(7,7,7));

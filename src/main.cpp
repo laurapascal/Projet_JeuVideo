@@ -1,10 +1,11 @@
 #include <irrlicht.h>
 #include <iostream>
 #include <vector>
-#include "coins.hpp"
 #include <cstdlib>
 #include "events.h"
 #include "zombie.hpp"
+#include "coins.hpp"
+#include "objet.hpp"
 
 using namespace irr;
 
@@ -27,6 +28,7 @@ int main()
   iv::IVideoDriver  *driver = device->getVideoDriver();
   is::ISceneManager *smgr = device->getSceneManager();
   ig::IGUIEnvironment *gui  = device->getGUIEnvironment();
+  is::IMetaTriangleSelector *meta_selector = smgr->createMetaTriangleSelector();
 
 
   // Ajout de l'archive qui contient entre autres un niveau complet
@@ -38,9 +40,10 @@ int main()
   node->setPosition(core::vector3df(-1350, -130, -1400));
 
   // Création du triangle selector
-  scene::ITriangleSelector *selector;
-  selector = smgr->createOctreeTriangleSelector(node->getMesh(), node);
-  node->setTriangleSelector(selector);
+  scene::ITriangleSelector *castle_selector;
+  castle_selector = smgr->createOctreeTriangleSelector(node->getMesh(), node);
+  node->setTriangleSelector(castle_selector);
+  meta_selector->addTriangleSelector(castle_selector);
   SKeyMap keyMap[5];
   keyMap[0].Action = EKA_MOVE_FORWARD;
   keyMap[0].KeyCode = KEY_KEY_Z;
@@ -65,9 +68,32 @@ int main()
   camera->setPosition(ic::vector3df(50, 50, -60));
   camera->setTarget(ic::vector3df(-70, 30, -60));
 
+  //Création du décor
+  std::vector<objet> decoration;
+  decoration.push_back(objet(ic::vector3df(256.0 ,-16.0 ,45.0),ic::vector3df(-90.0 ,-135.0 ,0.0),ic::vector3df(2.0 ,2.0 ,2.0), objet::armor1, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(55.0 ,179.0 ,-1050.0),ic::vector3df(-90.0 ,0.0 ,0.0),ic::vector3df(2.0 ,2.0 ,2.0), objet::armor1, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(680.0 ,243.0 ,1025.0),ic::vector3df(-90.0 ,225.0 ,0.0),ic::vector3df(2.0 ,2.0 ,2.0), objet::armor1, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(-580.0 ,115.0 ,-555.0),ic::vector3df(-90.0 ,45.0 ,0.0),ic::vector3df(2.0 ,2.0 ,2.0), objet::armor1, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(-150.0 ,-16.0 ,-160.0),ic::vector3df(-90.0 ,45.0 ,0.0),ic::vector3df(2.0 ,2.0 ,2.0), objet::armor2, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(250.0 ,115.0 ,-340.0),ic::vector3df(-90.0 ,-135.0 ,0.0),ic::vector3df(2.0 ,2.0 ,2.0), objet::armor2, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(-570.0 ,275.0 ,-1010.0),ic::vector3df(-90.0 ,45.0 ,0.0),ic::vector3df(2.0 ,2.0 ,2.0), objet::armor2, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(63.0 ,339.0 ,505.0),ic::vector3df(-90.0 ,180.0 ,0.0),ic::vector3df(2.0 ,2.0 ,2.0), objet::armor2, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(-120.0 ,90.0 ,450.0),ic::vector3df(180.0 ,0.0 ,0.0),ic::vector3df(20.0 ,20.0 ,20.0), objet::box, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(210.0 ,280.0 ,-60.0),ic::vector3df(180.0 ,0.0 ,0.0),ic::vector3df(20.0 ,20.0 ,20.0), objet::box, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(442.0 ,-45.0 ,-65.0),ic::vector3df(180.0 ,0.0 ,0.0),ic::vector3df(20.0 ,20.0 ,20.0), objet::box, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(-470.0 ,310.0 ,344.0),ic::vector3df(180.0 ,0.0 ,0.0),ic::vector3df(20.0 ,20.0 ,20.0), objet::box, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(-325.0 ,-60.0 ,-45.0),ic::vector3df(0.0 ,-90.0 ,0.0),ic::vector3df(13.0 ,13.0 ,13.0), objet::chest, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(-460.0 ,280.0 ,-240.0),ic::vector3df(0.0 ,180.0 ,0.0),ic::vector3df(13.0 ,13.0 ,13.0), objet::chest, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(-450.0 ,60.0 ,450.0),ic::vector3df(0.0 ,0.0 ,0.0),ic::vector3df(13.0 ,13.0 ,13.0), objet::chest, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(570.0 ,60.0 ,-540.0),ic::vector3df(0.0 ,180.0 ,0.0),ic::vector3df(13.0 ,13.0 ,13.0), objet::chest, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(-160.0 ,-60.0 ,90.0),ic::vector3df(0.0 ,0.0 ,0.0),ic::vector3df(8.0 ,8.0 ,8.0), objet::wood, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(560.0 ,70.0 ,450.0),ic::vector3df(0.0 ,0.0 ,0.0),ic::vector3df(8.0 ,8.0 ,8.0), objet::wood, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(683.0 ,230.0 ,-1000.0),ic::vector3df(0.0 ,-45.0 ,0.0),ic::vector3df(8.0 ,8.0 ,8.0), objet::wood, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(-95.0 ,260.0 ,-40.0),ic::vector3df(0.0 ,90.0 ,0.0),ic::vector3df(8.0 ,8.0 ,8.0), objet::wood, smgr, meta_selector));
+
   // Et l'animateur/collisionneur
   scene::ISceneNodeAnimator *anim;
-  anim = smgr->createCollisionResponseAnimator(selector,
+  anim = smgr->createCollisionResponseAnimator(meta_selector,
                                                camera,  // Le noeud que l'on veut gérer
                                                ic::vector3df(30, 50, 30), // "rayons" de la caméra
                                                ic::vector3df(0, -10, 0),  // gravité
@@ -218,7 +244,7 @@ int main()
         // Suppression de l'arme 1
         smgr->addToDeletionQueue(node_weapon);
 
-//        //Affichage de l'arme 2
+        //Affichage de l'arme 2
         weapon = smgr->getMesh("data/Weapons/weapon2/weapon2.obj");
         node_weapon = smgr->addAnimatedMeshSceneNode(weapon,camera);
         node_weapon->setMD2Animation(is::EMAT_CROUCH_STAND );
@@ -228,11 +254,12 @@ int main()
         node_weapon->setMaterialFlag(iv::EMF_LIGHTING, false);
     }
 
+
     // Gestion de nos pièces
     for (unsigned int ii = 0 ; ii<vectorCoins.size(); ++ii)
     {
 
-        std::vector<is::IMeshSceneNode*> vectorNodeCoins = vectorCoins[ii].get_vectorNodeCoins();
+        std::vector<is::IAnimatedMeshSceneNode*> vectorNodeCoins = vectorCoins[ii].get_vectorNodeCoins();
 
         for (unsigned int i = 0 ; i<vectorNodeCoins.size(); ++i)
         {
@@ -305,9 +332,6 @@ int main()
         fire_display = false;
     }
 
-
-    // Calcul du score :
-    // TODO: incrémenter le score en fonction du game
     // Mise à jour du score :
     score_10000->setImage(digits[(score / 10000) % 10]);
     score_1000->setImage(digits[(score / 1000) % 10]);

@@ -23,7 +23,7 @@ public:
              box,
              wood};
 
-    objet(ic::vector3df position, ic::vector3df rotation, ic::vector3df scale, type Type, scene::ISceneManager *smgr);
+    objet(ic::vector3df position, ic::vector3df rotation, ic::vector3df scale, type Type, scene::ISceneManager *smgr, is::IMetaTriangleSelector *meta_selector);
 
     ic::vector3df const& get_position() const;
 
@@ -33,9 +33,9 @@ public:
 
     type const& get_type() const;
 
-//    is::IAnimatedMeshSceneNode* const& get_mesh() const;
+    is::IAnimatedMesh* const& get_mesh() const;
 
-//    is::IMeshSceneNode* const& get_objet() const;
+    is::IAnimatedMeshSceneNode* const& get_objet() const;
 
 
 private:

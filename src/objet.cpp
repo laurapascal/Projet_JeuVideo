@@ -2,7 +2,7 @@
 #include <iostream>
 #include <cmath>
 
-objet::objet(ic::vector3df position, ic::vector3df rotation, ic::vector3df scale, type Type, is::ISceneManager *smgr)
+objet::objet(ic::vector3df position, ic::vector3df rotation, ic::vector3df scale, type Type, is::ISceneManager *smgr, is::IMetaTriangleSelector *meta_selector)
 :objectPostion(position),objectRotation(rotation),objectScale(scale),objectType(Type)
 {
     switch(objectType)
@@ -19,6 +19,11 @@ objet::objet(ic::vector3df position, ic::vector3df rotation, ic::vector3df scale
     nodeObject->setRotation(objectRotation);
     nodeObject->setScale(objectScale);
     nodeObject->setMaterialFlag(iv::EMF_LIGHTING, false);
+    // Création du triangle selector
+    scene::ITriangleSelector *object_selector;
+    object_selector = smgr->createTriangleSelector(nodeObject->getMesh(), nodeObject);
+    nodeObject->setTriangleSelector(object_selector);
+    meta_selector->addTriangleSelector(object_selector);
 }
 
 ic::vector3df const& objet::get_position() const
@@ -41,12 +46,12 @@ objet::type const& objet::get_type() const
     return objectType;
 }
 
-//is::IAnimatedMeshSceneNode* const& objet::get_mesh() const
-//{
-//    return meshObject;
-//}
+scene::IAnimatedMesh * const &objet::get_mesh() const
+{
+    return meshObject;
+}
 
-//is::IMeshSceneNode* const& objet::get_objet() const
-//{
-//    return nodeObject;
-//}
+is::IAnimatedMeshSceneNode* const& objet::get_objet() const
+{
+    return nodeObject;
+}

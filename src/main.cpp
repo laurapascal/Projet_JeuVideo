@@ -27,6 +27,7 @@ int main()
   iv::IVideoDriver  *driver = device->getVideoDriver();
   is::ISceneManager *smgr = device->getSceneManager();
   ig::IGUIEnvironment *gui  = device->getGUIEnvironment();
+  is::IMetaTriangleSelector *meta_selector = smgr->createMetaTriangleSelector();
 
 
   // Ajout de l'archive qui contient entre autres un niveau complet
@@ -38,9 +39,10 @@ int main()
   node->setPosition(core::vector3df(-1350, -130, -1400));
 
   // Création du triangle selector
-  scene::ITriangleSelector *selector;
-  selector = smgr->createOctreeTriangleSelector(node->getMesh(), node);
-  node->setTriangleSelector(selector);
+  scene::ITriangleSelector *castle_selector;
+  castle_selector = smgr->createOctreeTriangleSelector(node->getMesh(), node);
+  node->setTriangleSelector(castle_selector);
+  meta_selector->addTriangleSelector(castle_selector);
   SKeyMap keyMap[5];
   keyMap[0].Action = EKA_MOVE_FORWARD;
   keyMap[0].KeyCode = KEY_KEY_Z;
@@ -63,9 +65,18 @@ int main()
                                 true,        // Pas de possibilité de voler
                                 3);
 
+  //Création du décor
+  std::vector<objet> decoration;
+  decoration.push_back(objet(ic::vector3df(256.0 ,-16.0 ,45.0),ic::vector3df(-90.0 ,-135.0 ,0.0),ic::vector3df(2.0 ,2.0 ,2.0), objet::armor1, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(-150.0 ,-16.0 ,-160.0),ic::vector3df(-90.0 ,45.0 ,0.0),ic::vector3df(2.0 ,2.0 ,2.0), objet::armor2, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(100.0 ,-28.0 ,100.0),ic::vector3df(180.0 ,0.0 ,0.0),ic::vector3df(20.0 ,20.0 ,20.0), objet::box, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(130.0 ,-60.0 ,-200.0),ic::vector3df(0.0 ,90.0 ,0.0),ic::vector3df(13.0 ,13.0 ,13.0), objet::chest, smgr, meta_selector));
+  decoration.push_back(objet(ic::vector3df(-160.0 ,-60.0 ,90.0),ic::vector3df(0.0 ,0.0 ,0.0),ic::vector3df(8.0 ,8.0 ,8.0), objet::wood, smgr, meta_selector));
+
+
   // Et l'animateur/collisionneur
   scene::ISceneNodeAnimator *anim;
-  anim = smgr->createCollisionResponseAnimator(selector,
+  anim = smgr->createCollisionResponseAnimator(meta_selector,
                                                camera,  // Le noeud que l'on veut gérer
                                                ic::vector3df(30, 50, 30), // "rayons" de la caméra
                                                ic::vector3df(0, -10, 0),  // gravité
@@ -79,13 +90,6 @@ int main()
   target = gui->addImage(ic::rect<s32>(300,220,  340,260));
   target->setScaleImage(true);
   target->setImage(target_texture);
-
-  std::vector<objet> decoration;
-  decoration.push_back(objet(ic::vector3df(256.0 ,-16.0 ,45.0),ic::vector3df(-90.0 ,-135.0 ,0.0),ic::vector3df(2.0 ,2.0 ,2.0), objet::armor1, smgr));
-  decoration.push_back(objet(ic::vector3df(-150.0 ,-16.0 ,-160.0),ic::vector3df(-90.0 ,45.0 ,0.0),ic::vector3df(2.0 ,2.0 ,2.0), objet::armor2, smgr));
-  decoration.push_back(objet(ic::vector3df(100.0 ,-28.0 ,100.0),ic::vector3df(180.0 ,0.0 ,0.0),ic::vector3df(20.0 ,20.0 ,20.0), objet::box, smgr));
-  decoration.push_back(objet(ic::vector3df(130.0 ,-60.0 ,-200.0),ic::vector3df(0.0 ,90.0 ,0.0),ic::vector3df(13.0 ,13.0 ,13.0), objet::chest, smgr));
-  decoration.push_back(objet(ic::vector3df(-160.0 ,-60.0 ,90.0),ic::vector3df(0.0 ,0.0 ,0.0),ic::vector3df(8.0 ,8.0 ,8.0), objet::wood, smgr));
 
   // Chargement de l'arme
   ///Weapon 1
@@ -171,6 +175,8 @@ int main()
     std::cout<<"X: "<<camera->getPosition().X<<std::endl;
     std::cout<<"Y: "<<camera->getPosition().Y<<std::endl;
     std::cout<<"Z: "<<camera->getPosition().Z<<std::endl;
+
+    //gestion des collisions avec les objets
 
     // Gestion de nos pièces
     for (unsigned int ii = 0 ; ii<vectorCoins.size(); ++ii)

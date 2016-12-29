@@ -17,6 +17,8 @@ public:
   bool display_fire = false;
   bool display_arme1 = true;
   bool display_arme2 = false;
+  bool secouer_objet = false;
+  bool close_widget = false;
   void set_gui(irr::gui::IGUIEnvironment *gui);
 
 };

@@ -74,9 +74,9 @@ int main()
 
   // Chargement de nos ennemis zombie
   std::vector<zombie> vector_zombies;
-  int Nb_zombies = 1;
-  ic::vector3df pos_begin_zombie[Nb_zombies] = {ic::vector3df(-200.0,0.0,-60.0)};
-  ic::vector3df pos_end_zombie[Nb_zombies] = {ic::vector3df(0.0,0.0,-60.0)};
+  int Nb_zombies = 2;
+  ic::vector3df pos_begin_zombie[Nb_zombies] = {ic::vector3df(-200.0,-40.0,-60.0), ic::vector3df(49.0,-40.0,-180.0)};
+  ic::vector3df pos_end_zombie[Nb_zombies] = {ic::vector3df(0.0,-40.0,-60.0), ic::vector3df(49.0,-40.0,70.0)};
   for( int i = 0; i < Nb_zombies; i++)
   {
     zombie Zombie(pos_begin_zombie[i],pos_end_zombie[i]);
@@ -172,12 +172,24 @@ int main()
         is::IAnimatedMeshSceneNode* nodeZombie = Zombie.get_nodeZombie();
         ic::vector3df position_zombie = nodeZombie->getPosition();
         ic::vector3df rotation_zombie = nodeZombie->getRotation();
-        if( (int)rotation_zombie.Y % 360 == 0)
-            position_zombie.X += 2;
-        else if ((int)rotation_zombie.Y % 360 == 180)
-            position_zombie.X -= 2;
-        if(position_zombie.X == Zombie.get_pos_end().X || position_zombie.X == Zombie.get_pos_begin().X)
-                    rotation_zombie.Y += 180;
+        if(Zombie.get_pos_begin().X != Zombie.get_pos_end().X)
+        {
+            if( (int)rotation_zombie.Y % 360 == 0)
+                position_zombie.X += 2;
+            else if ((int)rotation_zombie.Y % 360 == 180)
+                position_zombie.X -= 2;
+            if(position_zombie.X == Zombie.get_pos_end().X || position_zombie.X == Zombie.get_pos_begin().X)
+                rotation_zombie.Y += 180;
+        }
+        if(Zombie.get_pos_begin().Z != Zombie.get_pos_end().Z)
+        {
+            if( (int)rotation_zombie.Y % 360 == 90)
+                position_zombie.Z -= 2;
+            else if ((int)rotation_zombie.Y % 360 == 270)
+                position_zombie.Z += 2;
+            if(position_zombie.Z == Zombie.get_pos_end().Z || position_zombie.Z == Zombie.get_pos_begin().Z)
+                rotation_zombie.Y += 180;
+        }
         nodeZombie->setRotation(rotation_zombie);
         nodeZombie->setPosition(position_zombie);
     }

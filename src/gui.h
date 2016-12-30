@@ -12,7 +12,8 @@ namespace ig = irr::gui;
 
 
 //Crée un GUI pour le choix du personnage
-ig::IGUIWindow * gui_creation(ig::IGUIEnvironment *gui);
+ig::IGUIWindow * creation_message_objet(ig::IGUIEnvironment *gui);
+ig::IGUIWindow * creation_message_fantome(ig::IGUIEnvironment *gui);
 void remove_message(ig::IGUIWindow *window);
 
 #endif // GUI_H

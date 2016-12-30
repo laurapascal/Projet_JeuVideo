@@ -99,7 +99,8 @@ int main()
       ouverture_message[i] = false;
       collision_objet[i] = false;
   }
-
+        // Variable pour définir l'index de l'objet où se cache notre fantome
+  unsigned int index_objet_fantome = rand() % decoration.size();
 
   // Et l'animateur/collisionneur
   scene::ISceneNodeAnimator *anim;
@@ -117,7 +118,7 @@ int main()
   ic::vector3df pos_end_zombie[Nb_zombies] = {ic::vector3df(0.0,-40.0,-60.0), ic::vector3df(49.0,-40.0,70.0)};
   for( int i = 0; i < Nb_zombies; i++)
   {
-    zombie Zombie(pos_begin_zombie[i],pos_end_zombie[i]);
+    zombie Zombie(pos_begin_zombie[i],pos_end_zombie[i], false);
     Zombie.creation_nodeZombie(smgr, driver);
     vector_zombies.push_back(Zombie);
   }
@@ -239,8 +240,15 @@ int main()
             // Ouverture du message si il n'est pas déjà ouvert
             if(!collision_objet[i] && !ouverture_message[i])
             {
-                 window = gui_creation(gui); // Creation d'un message indiquant que en appuyant sur la tour E, le joueur peut secouer l'objet
-                 ouverture_message[i] = true;
+                // Le joueur ne peux appuyer sur entree pour fermer un message
+                // ou sur F pour fouiller un objet
+                // seulement si il est proximité de cet objet
+                if(receiver.close_widget) receiver.close_widget = false;
+                if(receiver.fouiller_objet) receiver.fouiller_objet = false;
+                // Creation d'un message indiquant que:
+                // si le joueur appuye sur la touche F, le joueur peut fouiller cet objet
+                window = creation_message_objet(gui);
+                ouverture_message[i] = true;
             }
             collision_objet[i] = true;
             // Si le joueur a appuyé sur E
@@ -249,6 +257,16 @@ int main()
                 receiver.fouiller_objet = false;
                 remove_message(window);
                 ouverture_message[i] = false;
+                // Si le joueur a trouvé le bon objet:
+                // - message indiquant que l'on a trouvé un fantome
+                // - apparition d'un fantome
+                if(index_objet_fantome == i)
+                {
+                    window = creation_message_fantome(gui);
+                    zombie Zombie(ic::vector3df(-200.0,40.0,-60.0),ic::vector3df(0.0,80.0,-60.0), true);
+                    Zombie.creation_nodeZombie(smgr, driver);
+                    vector_zombies.push_back(Zombie);
+                }
             }
             // Si le joueur a appuyé sur entré
             if(receiver.close_widget)
@@ -269,6 +287,7 @@ int main()
             }
         }
     }
+
 
 
     // Gestion de nos ennemis zombie
@@ -296,6 +315,13 @@ int main()
                 position_zombie.Z += 2;
             if(position_zombie.Z == Zombie.get_pos_end().Z || position_zombie.Z == Zombie.get_pos_begin().Z)
                 rotation_zombie.Y += 180;
+        }
+        if(Zombie.is_ghost())
+        {
+            if(position_zombie.Y != Zombie.get_pos_end().Y)
+                position_zombie.Y += 2;
+            else if(position_zombie.Y != Zombie.get_pos_begin().Y)
+                position_zombie.Y -= 2;
         }
         nodeZombie->setRotation(rotation_zombie);
         nodeZombie->setPosition(position_zombie);

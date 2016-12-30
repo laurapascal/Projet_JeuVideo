@@ -2,8 +2,8 @@
 #include <iostream>
 #include <cmath>
 
-zombie::zombie( ic::vector3df pos_begin_param, ic::vector3df pos_end_param)
-    :pos_begin(pos_begin_param),pos_end(pos_end_param)
+zombie::zombie( ic::vector3df pos_begin_param, ic::vector3df pos_end_param, bool ghost_param)
+    :pos_begin(pos_begin_param),pos_end(pos_end_param), ghost(ghost_param)
 {
 
 }
@@ -15,6 +15,10 @@ ic::vector3df const& zombie::get_pos_begin() const
 ic::vector3df const& zombie::get_pos_end() const
 {
     return pos_end;
+}
+bool const& zombie::is_ghost() const
+{
+    return ghost;
 }
 scene::IAnimatedMeshSceneNode * zombie::get_nodeZombie()
 {
@@ -37,6 +41,7 @@ void zombie::creation_nodeZombie(is::ISceneManager *smgr, iv::IVideoDriver  *dri
     nodeZombie->setMD2Animation(irr::scene::EMAT_STAND);
     nodeZombie->setPosition(pos_begin);
     if(pos_begin.Z != pos_end.Z) nodeZombie->setRotation(ic::vector3df(0.0, 270.0, 0.0));
+    if(ghost) nodeZombie->setDebugDataVisible(is::EDS_HALF_TRANSPARENCY);
     iv::ITexture* texture_zombie = driver->getTexture("data/ennemis_zombie/base.pcx");
     nodeZombie->setMaterialTexture(0, texture_zombie);
     nodeZombie->setMD2Animation(irr::scene::EMAT_RUN);

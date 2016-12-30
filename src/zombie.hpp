@@ -17,10 +17,11 @@ class zombie
 {
 public:
 
-    zombie(ic::vector3df pos_begin_param, ic::vector3df pos_end_param);
+    zombie(ic::vector3df pos_begin_param, ic::vector3df pos_end_param, bool ghost_param);
 
     ic::vector3df const& get_pos_begin() const;
     ic::vector3df const& get_pos_end() const;
+    bool const&is_ghost() const;
     is::IAnimatedMeshSceneNode* get_nodeZombie();
     void set_nodeZombie(is::IAnimatedMeshSceneNode* nodeZombie_param);
 
@@ -28,10 +29,12 @@ public:
     void creation_nodeZombie(is::ISceneManager *smgr, video::IVideoDriver *driver);
 
 private:
-    /** Position of the first coin  **/
+    /** Position de départ du zombie **/
     ic::vector3df pos_begin;
-    /** Number of the last coin **/
+    /** Position où le zombie fait demi tour **/
     ic::vector3df pos_end;
+    /** Precise si le zombie est un fantome ou non **/
+    bool ghost;
     /** Node de notre zombie **/
     is::IAnimatedMeshSceneNode *nodeZombie;
 

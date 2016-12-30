@@ -45,3 +45,13 @@ void zombie::creation_nodeZombie(is::ISceneManager *smgr, iv::IVideoDriver  *dri
     nodeZombie->setMD2Animation(irr::scene::EMAT_RUN);
 }
 
+bool const& zombie::isAlive() const
+{
+    return alive;
+}
+
+void zombie::zombieDied()
+{
+    alive = false;
+}
+

@@ -27,6 +27,8 @@ public:
     /** Creation of a vector containing Nb_zombie zombie nodes**/
     void creation_nodeZombie(is::ISceneManager *smgr, video::IVideoDriver *driver);
 
+    bool isAlive = true;
+
 private:
     /** Position of the first coin  **/
     ic::vector3df pos_begin;

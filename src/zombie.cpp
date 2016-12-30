@@ -36,8 +36,12 @@ void zombie::creation_nodeZombie(is::ISceneManager *smgr, iv::IVideoDriver  *dri
     nodeZombie->setMaterialFlag(irr::video::EMF_LIGHTING, false);
     nodeZombie->setMD2Animation(irr::scene::EMAT_STAND);
     nodeZombie->setPosition(pos_begin);
+    nodeZombie->setScale(ic::vector3df(1.5, 1.5, 1.5));
     if(pos_begin.Z != pos_end.Z) nodeZombie->setRotation(ic::vector3df(0.0, 270.0, 0.0));
     iv::ITexture* texture_zombie = driver->getTexture("data/ennemis_zombie/base.pcx");
     nodeZombie->setMaterialTexture(0, texture_zombie);
+    is::ITriangleSelector *selector = smgr->createTriangleSelector(nodeZombie);
+    nodeZombie->setTriangleSelector(selector);
     nodeZombie->setMD2Animation(irr::scene::EMAT_RUN);
 }
+

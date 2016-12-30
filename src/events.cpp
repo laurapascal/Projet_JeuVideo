@@ -30,6 +30,12 @@ bool EventReceiver::keyboard_handler(const SEvent &event)
         {
         case KEY_ESCAPE:
             exit(0);
+        case KEY_KEY_F:
+          fouiller_objet = true;
+          break;
+        case KEY_RETURN:
+          close_widget = true;
+          break;
         default:;
         }
     }

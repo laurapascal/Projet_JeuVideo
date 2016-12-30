@@ -6,6 +6,7 @@
 #include "zombie.hpp"
 #include "coins.hpp"
 #include "objet.hpp"
+#include "gui.h"
 
 using namespace irr;
 
@@ -90,6 +91,15 @@ int main()
   decoration.push_back(objet(ic::vector3df(560.0 ,70.0 ,450.0),ic::vector3df(0.0 ,0.0 ,0.0),ic::vector3df(8.0 ,8.0 ,8.0), objet::wood, smgr, meta_selector));
   decoration.push_back(objet(ic::vector3df(683.0 ,230.0 ,-1000.0),ic::vector3df(0.0 ,-45.0 ,0.0),ic::vector3df(8.0 ,8.0 ,8.0), objet::wood, smgr, meta_selector));
   decoration.push_back(objet(ic::vector3df(-95.0 ,260.0 ,-40.0),ic::vector3df(0.0 ,90.0 ,0.0),ic::vector3df(8.0 ,8.0 ,8.0), objet::wood, smgr, meta_selector));
+        // Variable pour gerer notre message lorsque le joueur rentre en collision avec un objet
+  bool ouverture_message[decoration.size()];
+  bool collision_objet[decoration.size()];
+  for (unsigned int i = 0; i < decoration.size(); ++i)
+  {
+      ouverture_message[i] = false;
+      collision_objet[i] = false;
+  }
+
 
   // Et l'animateur/collisionneur
   scene::ISceneNodeAnimator *anim;
@@ -208,9 +218,58 @@ int main()
   int fire_display = false;
   ig::IGUIImage *fire;
   iv::ITexture *fire_texture;
+  ig::IGUIWindow *window;
+
+
+
   while(device->run())
   {
     driver->beginScene(true, true, iv::SColor(100,150,200,255));
+
+    // Gestion de nos objets
+    for (unsigned int i = 0; i  <decoration.size(); ++i)
+    {
+        ic::vector3df positionObjet = decoration[i].get_position();
+        float diffX = camera->getPosition().X - positionObjet.X;
+        float diffY = camera->getPosition().Y - positionObjet.Y;
+        float diffZ = camera->getPosition().Z - positionObjet.Z;
+        float dist_perso_coins= sqrt(diffX*diffX + diffY*diffY + diffZ*diffZ);
+        if (dist_perso_coins <= 100)
+        {
+            // Ouverture du message si il n'est pas déjà ouvert
+            if(!collision_objet[i] && !ouverture_message[i])
+            {
+                 window = gui_creation(gui); // Creation d'un message indiquant que en appuyant sur la tour E, le joueur peut secouer l'objet
+                 ouverture_message[i] = true;
+            }
+            collision_objet[i] = true;
+            // Si le joueur a appuyé sur E
+            if(receiver.fouiller_objet)
+            {
+                receiver.fouiller_objet = false;
+                remove_message(window);
+                ouverture_message[i] = false;
+            }
+            // Si le joueur a appuyé sur entré
+            if(receiver.close_widget)
+            {
+                receiver.close_widget = false;
+                remove_message(window);
+                ouverture_message[i] = false;
+            }
+        }
+        else
+        {
+            // Fermeture du message si le joueur n'est plus a proximité de l'objet
+            collision_objet[i] = false;
+            if(ouverture_message[i])
+            {
+                remove_message(window);
+                ouverture_message[i] = false;
+            }
+        }
+    }
+
 
     // Gestion de nos ennemis zombie
     for (unsigned int i = 0 ; i<vector_zombies.size(); ++i)
@@ -281,19 +340,6 @@ int main()
 
         std::vector<is::IAnimatedMeshSceneNode*> vectorNodeCoins = vectorCoins[ii].get_vectorNodeCoins();
 
-        for (unsigned int i = 0 ; i<decoration.size(); ++i)
-        {
-            ic::vector3df positionObjet = decoration[i].get_position();
-            float diffX = camera->getPosition().X - positionObjet.X;
-            float diffY = camera->getPosition().Y - positionObjet.Y;
-            float diffZ = camera->getPosition().Z - positionObjet.Z;
-            float dist_perso_coins= sqrt(diffX*diffX + diffY*diffY + diffZ*diffZ);
-            if (dist_perso_coins <= 100)
-            {
-                std::cout<<"Je suis prêt d'un objet appuyé sur 'e' pour le secouer!"<<std::endl;
-            }
-
-        }
         for (unsigned int i = 0 ; i<vectorNodeCoins.size(); ++i)
         {
             // Rotation des pièces

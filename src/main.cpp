@@ -6,6 +6,7 @@
 #include "zombie.hpp"
 #include "coins.hpp"
 #include "objet.hpp"
+#include "callback.hpp"
 
 using namespace irr;
 
@@ -187,6 +188,7 @@ int main()
     int fire_display = false;
     ig::IGUIImage *fire;
     iv::ITexture *fire_texture;
+    callback* CallBack=new callback(smgr);
     while(device->run())
     {
         driver->beginScene(true, true, iv::SColor(100,150,200,255));
@@ -370,6 +372,7 @@ int main()
                         is::IAnimatedMeshSceneNode* node = vector_zombies[i].get_nodeZombie();
                         node->setMD2Animation(is::EMAT_DEATH_FALLBACK);
                         node->setLoopMode(false);
+                        node->setAnimationEndCallback(CallBack);
                         vector_zombies[i].isAlive = false;
                     }
                 }

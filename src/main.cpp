@@ -99,8 +99,24 @@ int main()
       ouverture_message[i] = false;
       collision_objet[i] = false;
   }
-        // Variable pour définir l'index de l'objet où se cache notre fantome
-  unsigned int index_objet_fantome = rand() % decoration.size();
+        // Tableau pour définir les 3 index des objets où se cachent nos 3 fantômes
+  std::vector<unsigned int>  index_objet_fantome;
+  bool index_different = false;
+  while(!index_different)
+  {
+      int j = rand() % decoration.size();
+      int k = rand() % decoration.size();
+      int l = rand() % decoration.size();
+      if (j != k && k != l && l != j)
+      {
+          index_objet_fantome.push_back(j);
+          index_objet_fantome.push_back(k);
+          index_objet_fantome.push_back(l);
+          index_different = true;
+      }
+
+  }
+
 
   // Et l'animateur/collisionneur
   scene::ISceneNodeAnimator *anim;
@@ -251,7 +267,7 @@ int main()
                 ouverture_message[i] = true;
             }
             collision_objet[i] = true;
-            // Si le joueur a appuyé sur E
+            // Si le joueur a appuyé sur F
             if(receiver.fouiller_objet)
             {
                 receiver.fouiller_objet = false;
@@ -260,12 +276,17 @@ int main()
                 // Si le joueur a trouvé le bon objet:
                 // - message indiquant que l'on a trouvé un fantome
                 // - apparition d'un fantome
-                if(index_objet_fantome == i)
+                for(unsigned k = 0; k < index_objet_fantome.size(); k++)
                 {
-                    window = creation_message_fantome(gui);
-                    zombie Zombie(ic::vector3df(-200.0,40.0,-60.0),ic::vector3df(0.0,80.0,-60.0), true);
-                    Zombie.creation_nodeZombie(smgr, driver);
-                    vector_zombies.push_back(Zombie);
+                    if(index_objet_fantome[k] == i)
+                    {
+                        ouverture_message[i] = true;
+                        window = creation_message_fantome(gui);
+                        zombie Zombie(ic::vector3df(-200.0,40.0,-60.0),ic::vector3df(0.0,80.0,-60.0), true);
+                        Zombie.creation_nodeZombie(smgr, driver);
+                        vector_zombies.push_back(Zombie);
+                        index_objet_fantome.erase(index_objet_fantome.begin() + k);
+                    }
                 }
             }
             // Si le joueur a appuyé sur entré

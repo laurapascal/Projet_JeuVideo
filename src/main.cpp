@@ -7,6 +7,7 @@
 #include "coins.hpp"
 #include "objet.hpp"
 #include "callback.hpp"
+#include "gui.h"
 
 using namespace irr;
 
@@ -91,6 +92,32 @@ int main()
     decoration.push_back(objet(ic::vector3df(683.0 ,230.0 ,-1000.0),ic::vector3df(0.0 ,-45.0 ,0.0),ic::vector3df(8.0 ,8.0 ,8.0), objet::wood, smgr, meta_selector));
     decoration.push_back(objet(ic::vector3df(-95.0 ,260.0 ,-40.0),ic::vector3df(0.0 ,90.0 ,0.0),ic::vector3df(8.0 ,8.0 ,8.0), objet::wood, smgr, meta_selector));
 
+    // Variable pour gerer notre message lorsque le joueur rentre en collision avec un objet
+    bool ouverture_message[decoration.size()];
+    bool collision_objet[decoration.size()];
+    for (unsigned int i = 0; i < decoration.size(); ++i)
+    {
+        ouverture_message[i] = false;
+        collision_objet[i] = false;
+    }
+    // Tableau pour définir les 3 index des objets où se cachent nos 3 fantômes
+    std::vector<unsigned int>  index_objet_fantome;
+    bool index_different = false;
+    while(!index_different)
+    {
+        int j = rand() % decoration.size();
+        int k = rand() % decoration.size();
+        int l = rand() % decoration.size();
+        if (j != k && k != l && l != j)
+        {
+            index_objet_fantome.push_back(j);
+            index_objet_fantome.push_back(k);
+            index_objet_fantome.push_back(l);
+            index_different = true;
+        }
+
+    }
+
     // Et l'animateur/collisionneur
     scene::ISceneNodeAnimator *anim;
     anim = smgr->createCollisionResponseAnimator(meta_selector,
@@ -107,7 +134,7 @@ int main()
     ic::vector3df pos_end_zombie[Nb_zombies] = {ic::vector3df(0.0,-30.0,-60.0), ic::vector3df(49.0,-30.0,70.0)};
     for( int i = 0; i < Nb_zombies; i++)
     {
-        zombie Zombie(pos_begin_zombie[i],pos_end_zombie[i]);
+        zombie Zombie(pos_begin_zombie[i], pos_end_zombie[i], false);
         Zombie.creation_nodeZombie(smgr, driver);
         vector_zombies.push_back(Zombie);
     }
@@ -156,16 +183,36 @@ int main()
 
     // Création of N set of coins:
     // Initialisation des set de coins : position de départ, position de fin, et nombre de pièces
-    int Nb_coinsSet = 4;
+    int Nb_coinsSet = 13;
     ic::vector3df pos_begin[Nb_coinsSet] = {ic::vector3df(-200.0,10.0,-60.0),
                                             ic::vector3df(60.0,10.0,23.0),
                                             ic::vector3df(210.0,10.0,-134.0),
-                                            ic::vector3df(282.0,10.0,70.0)};
-    ic::vector3df pos_end[Nb_coinsSet] = {ic::vector3df(-350.0,10.0,-60.0),
+                                            ic::vector3df(282.0,10.0,0.0),
+                                            ic::vector3df(280.0,140.0,320.0),
+                                            ic::vector3df(760.0,270.0,840.0),
+                                            ic::vector3df(570.0,364.0,235.0),
+                                            ic::vector3df(225.0,364.0,325.0),
+                                            ic::vector3df(-450.0,364.0,210.0),
+                                            ic::vector3df(185.0,206.0,-970.0),
+                                            ic::vector3df(-97.0,142.0,-450.0),
+                                            ic::vector3df(-450.0,142.0,-217.0),
+                                            ic::vector3df(570.0,142.0,174.0)
+                                           };
+    ic::vector3df pos_end[Nb_coinsSet] = {ic::vector3df(-280.0,10.0,-60.0),
                                           ic::vector3df(-120.0,10.0,23.0),
                                           ic::vector3df(-65.0,10.0,-134.0),
-                                          ic::vector3df(282.0,10.0,-153.0)};
-    int nb_coins[Nb_coinsSet] = {3, 4, 3, 6};
+                                          ic::vector3df(282.0,10.0,-153.0),
+                                          ic::vector3df(720.0,140.0,320.0),
+                                          ic::vector3df(420.0,270.0,840.0),
+                                          ic::vector3df(570.0,364.0,-500.0),
+                                          ic::vector3df(-310.0,364.0,325.0),
+                                          ic::vector3df(-450.0,364.0,-130.0),
+                                          ic::vector3df(-147.0,206.0,-970.0),
+                                          ic::vector3df(-524.0,142.0,-450.0),
+                                          ic::vector3df(-450.0,142.0,310.0),
+                                          ic::vector3df(570.0,142.0,-450.0),
+                                         };
+    int nb_coins[Nb_coinsSet] = {3, 4, 3, 6, 5, 4, 7, 6, 3, 3, 4, 3, 5};
     std::vector<int> set_selection;
     for( int i = 0; i < Nb_coinsSet; i++)
     {
@@ -173,7 +220,7 @@ int main()
     }
     std::vector<int> selected_set;
     // Affichage des set de pièces sélectionnées
-    int Nb_coinsSet_display = 2;
+    int Nb_coinsSet_display = 6;
     for( int i = 0; i < Nb_coinsSet_display; i++)
     {
         int j = rand() % set_selection.size();
@@ -188,10 +235,78 @@ int main()
     int fire_display = false;
     ig::IGUIImage *fire;
     iv::ITexture *fire_texture;
+    ig::IGUIWindow *window;
     callback* CallBack=new callback(smgr);
+
     while(device->run())
     {
         driver->beginScene(true, true, iv::SColor(100,150,200,255));
+
+        // Gestion de nos objets
+        for (unsigned int i = 0; i  <decoration.size(); ++i)
+        {
+            ic::vector3df positionObjet = decoration[i].get_position();
+            float diffX = camera->getPosition().X - positionObjet.X;
+            float diffY = camera->getPosition().Y - positionObjet.Y;
+            float diffZ = camera->getPosition().Z - positionObjet.Z;
+            float dist_perso_coins= sqrt(diffX*diffX + diffY*diffY + diffZ*diffZ);
+            if (dist_perso_coins <= 100)
+            {
+                // Ouverture du message si il n'est pas déjà ouvert
+                if(!collision_objet[i] && !ouverture_message[i])
+                {
+                    // Le joueur ne peux appuyer sur entree pour fermer un message
+                    // ou sur F pour fouiller un objet
+                    // seulement si il est proximité de cet objet
+                    if(receiver.close_widget) receiver.close_widget = false;
+                    if(receiver.fouiller_objet) receiver.fouiller_objet = false;
+                    // Creation d'un message indiquant que:
+                    // si le joueur appuye sur la touche F, le joueur peut fouiller cet objet
+                    window = creation_message_objet(gui);
+                    ouverture_message[i] = true;
+                }
+                collision_objet[i] = true;
+                // Si le joueur a appuyé sur F
+                if(receiver.fouiller_objet)
+                {
+                    receiver.fouiller_objet = false;
+                    remove_message(window);
+                    ouverture_message[i] = false;
+                    // Si le joueur a trouvé le bon objet:
+                    // - message indiquant que l'on a trouvé un fantome
+                    // - apparition d'un fantome
+                    for(unsigned k = 0; k < index_objet_fantome.size(); k++)
+                    {
+                        if(index_objet_fantome[k] == i)
+                        {
+                            ouverture_message[i] = true;
+                            window = creation_message_fantome(gui);
+                            zombie Zombie(ic::vector3df(-200.0,40.0,-60.0),ic::vector3df(0.0,80.0,-60.0), true);
+                            Zombie.creation_nodeZombie(smgr, driver);
+                            vector_zombies.push_back(Zombie);
+                            index_objet_fantome.erase(index_objet_fantome.begin() + k);
+                        }
+                    }
+                }
+                // Si le joueur a appuyé sur entré
+                if(receiver.close_widget)
+                {
+                    receiver.close_widget = false;
+                    remove_message(window);
+                    ouverture_message[i] = false;
+                }
+            }
+            else
+            {
+                // Fermeture du message si le joueur n'est plus a proximité de l'objet
+                collision_objet[i] = false;
+                if(ouverture_message[i])
+                {
+                    remove_message(window);
+                    ouverture_message[i] = false;
+                }
+            }
+        }
 
         // Gestion de nos ennemis zombie
         for (unsigned int i = 0 ; i<vector_zombies.size(); ++i)
@@ -265,19 +380,6 @@ int main()
 
             std::vector<is::IAnimatedMeshSceneNode*> vectorNodeCoins = vectorCoins[ii].get_vectorNodeCoins();
 
-            for (unsigned int i = 0 ; i<decoration.size(); ++i)
-            {
-                ic::vector3df positionObjet = decoration[i].get_position();
-                float diffX = camera->getPosition().X - positionObjet.X;
-                float diffY = camera->getPosition().Y - positionObjet.Y;
-                float diffZ = camera->getPosition().Z - positionObjet.Z;
-                float dist_perso_coins= sqrt(diffX*diffX + diffY*diffY + diffZ*diffZ);
-                if (dist_perso_coins <= 100)
-                {
-                    std::cout<<"Je suis prêt d'un objet appuyé sur 'e' pour le secouer!"<<std::endl;
-                }
-
-            }
             for (unsigned int i = 0 ; i<vectorNodeCoins.size(); ++i)
             {
                 // Rotation des pièces

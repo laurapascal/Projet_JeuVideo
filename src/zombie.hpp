@@ -27,7 +27,9 @@ public:
     /** Creation of a vector containing Nb_zombie zombie nodes**/
     void creation_nodeZombie(is::ISceneManager *smgr, video::IVideoDriver *driver);
 
-    bool isAlive = true;
+    bool const& isAlive() const;
+
+    void zombieDied();
 
 private:
     /** Position of the first coin  **/
@@ -36,6 +38,8 @@ private:
     ic::vector3df pos_end;
     /** Node de notre zombie **/
     is::IAnimatedMeshSceneNode *nodeZombie;
+    /** Is the zombie Alive **/
+    bool alive = true;
 
 };
 

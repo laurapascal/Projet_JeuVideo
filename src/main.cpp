@@ -198,7 +198,7 @@ int main()
         {
             // Cent pas du zombie
             zombie Zombie = vector_zombies[i];
-            if (Zombie.isAlive)
+            if (Zombie.isAlive())
             {
                 is::IAnimatedMeshSceneNode* nodeZombie = Zombie.get_nodeZombie();
                 ic::vector3df position_zombie = nodeZombie->getPosition();
@@ -373,7 +373,7 @@ int main()
                         node->setMD2Animation(is::EMAT_DEATH_FALLBACK);
                         node->setLoopMode(false);
                         node->setAnimationEndCallback(CallBack);
-                        vector_zombies[i].isAlive = false;
+                        vector_zombies[i].zombieDied();
                     }
                 }
             }

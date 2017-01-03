@@ -469,13 +469,17 @@ int main()
                 for(unsigned int i=0;i<vector_zombies.size();i++)
                 {
 
-                    if(vector_zombies[i].get_nodeZombie()==selected_scene_node)
+                    if((vector_zombies[i].is_ghost() && receiver.display_arme2) || (!vector_zombies[i].is_ghost() && receiver.display_arme1))
                     {
-                        is::IAnimatedMeshSceneNode* node = vector_zombies[i].get_nodeZombie();
-                        node->setMD2Animation(is::EMAT_DEATH_FALLBACK);
-                        node->setLoopMode(false);
-                        node->setAnimationEndCallback(CallBack);
-                        vector_zombies[i].zombieDied();
+                        if(vector_zombies[i].get_nodeZombie()==selected_scene_node)
+                        {
+                            is::IAnimatedMeshSceneNode* node = vector_zombies[i].get_nodeZombie();
+                            node->setMD2Animation(is::EMAT_DEATH_FALLBACK);
+                            node->setLoopMode(false);
+                            node->setAnimationEndCallback(CallBack);
+                            vector_zombies[i].zombieDied();
+                            score += 10;
+                        }
                     }
                 }
             }

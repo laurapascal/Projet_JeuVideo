@@ -309,7 +309,8 @@ int main()
         }
 
         // Gestion de nos ennemis zombie
-        for (unsigned int i = 0 ; i<vector_zombies.size(); ++i)
+        bool zombies_all_dead = true; // message permettant de savoir si tous les zombie ont été tués
+        for (unsigned int i = 0 ; i <  vector_zombies.size(); ++i)
         {
             zombie Zombie = vector_zombies[i];
 
@@ -352,8 +353,14 @@ int main()
                     if(score < 0)
                         score = 0;
                 }
+
+                // Variable pour savoir si tous les zombies ont été tués
+                zombies_all_dead = false;
             }
         }
+        // Si tous les fantomes et zombies sont mort, c'est la fin du jeu
+        if (zombies_all_dead && index_objet_fantome.size() == 0)
+            creation_message_finjeu(gui);
 
 
         // Gestion de nos armes

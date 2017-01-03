@@ -311,13 +311,15 @@ int main()
         // Gestion de nos ennemis zombie
         for (unsigned int i = 0 ; i<vector_zombies.size(); ++i)
         {
-            // Cent pas du zombie
             zombie Zombie = vector_zombies[i];
+
             if (Zombie.isAlive())
             {
                 is::IAnimatedMeshSceneNode* nodeZombie = Zombie.get_nodeZombie();
                 ic::vector3df position_zombie = nodeZombie->getPosition();
                 ic::vector3df rotation_zombie = nodeZombie->getRotation();
+
+                // Cent pas du zombie
                 if(Zombie.get_pos_begin().X != Zombie.get_pos_end().X)
                 {
                     if( (int)rotation_zombie.Y % 360 == 0)
@@ -338,6 +340,18 @@ int main()
                 }
                 nodeZombie->setRotation(rotation_zombie);
                 nodeZombie->setPosition(position_zombie);
+
+                // Collision avec le personnage
+                float diffX = camera->getPosition().X - position_zombie.X;
+                float diffY = camera->getPosition().Y - position_zombie.Y;
+                float diffZ = camera->getPosition().Z - position_zombie.Z;
+                float dist_perso_zombie = sqrt(diffX*diffX + diffY*diffY + diffZ*diffZ);
+                if (dist_perso_zombie <= 60)
+                {
+                    score -= 10;
+                    if(score < 0)
+                        score = 0;
+                }
             }
         }
 
